@@ -1,1 +1,1 @@
-This repository is inputed the template of my project
+This repository is inputed the templates of my project
