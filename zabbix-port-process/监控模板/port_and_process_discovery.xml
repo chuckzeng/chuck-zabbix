@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2024-08-12T04:06:00Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Port and Process Discovery</template>
+            <name>Port and Process Discovery</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Port</name>
+                </application>
+                <application>
+                    <name>Proc</name>
+                </application>
+                <application>
+                    <name>TCP STATUS</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>port.discovery</name>
+                    <key>port.discovery</key>
+                    <delay>60</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>{#PORT} Port status on {#HOST}</name>
+                            <key>net.tcp.port[{#HOST},{#PORT}]</key>
+                            <applications>
+                                <application>
+                                    <name>Port</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{avg(#3)}=0</expression>
+                                    <name>port is down on {#PORTNAME}</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tcp Close wait on  {#PORTNAME}</name>
+                            <type>ZABBIX_ACTIVE</type>
+                            <key>tcp_connect_close_wait[{#PORTNAME}]</key>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <applications>
+                                <application>
+                                    <name>TCP STATUS</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tcp established on  {#PORTNAME}</name>
+                            <type>ZABBIX_ACTIVE</type>
+                            <key>tcp_connect_established[{#PORTNAME}]</key>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <applications>
+                                <application>
+                                    <name>TCP STATUS</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tcp Connect All on  {#PORTNAME}</name>
+                            <type>ZABBIX_ACTIVE</type>
+                            <key>tcp_connect_total[{#PORTNAME}]</key>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <applications>
+                                <application>
+                                    <name>TCP STATUS</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Port_status_graph  {#PORTNAME}</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Port and Process Discovery</host>
+                                        <key>net.tcp.port[{#HOST},{#PORT}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>F63100</color>
+                                    <item>
+                                        <host>Port and Process Discovery</host>
+                                        <key>tcp_connect_close_wait[{#PORTNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Port and Process Discovery</host>
+                                        <key>tcp_connect_total[{#PORTNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>3</sortorder>
+                                    <color>A54F10</color>
+                                    <item>
+                                        <host>Port and Process Discovery</host>
+                                        <key>tcp_connect_established[{#PORTNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>proc.discovery</name>
+                    <key>proc.discovery</key>
+                    <delay>60</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Process status on {#PROCNAME}</name>
+                            <key>proc_num[{#PROCNAME}]</key>
+                            <delay>30s</delay>
+                            <applications>
+                                <application>
+                                    <name>Proc</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt; {#PROC_NUM}</expression>
+                                    <name>service change</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{avg(#2)}=0</expression>
+                                    <name>service is down on {#PROCNAME}</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$PORT}</macro>
+                </macro>
+                <macro>
+                    <macro>{$PROCESS}</macro>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
