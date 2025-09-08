@@ -1,0 +1,31 @@
+zabbix_export:
+  version: '6.0'
+  date: '2025-09-08T07:13:25Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 9583cf5a1cfe4a6c926127d0ad421417
+      template: 'Template monitor log count'
+      name: 'Template monitor log count'
+      groups:
+        - name: Templates
+      discovery_rules:
+        - uuid: f309629e40814936ac6e6bdf599f4509
+          name: ip.discovery
+          key: ip.discovery
+          delay: 5m
+          item_prototypes:
+            - uuid: e3c345904338405a9355d1a909694f51
+              name: '{#IP} 一小时内的日志量'
+              key: 'get_log_count[{#IP}]'
+              delay: 5m
+              tags:
+                - tag: Application
+                  value: Log_Count
+              trigger_prototypes:
+                - uuid: b451b50b5763461d879c38b52e02cd4f
+                  expression: 'max(/Template monitor log count/get_log_count[{#IP}],#3)=0'
+                  name: '运维公司主机{#IP}日志掉线'
+                  priority: HIGH
+                  manual_close: 'YES'
